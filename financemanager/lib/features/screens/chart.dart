@@ -1,0 +1,82 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:financemanager/features/models/hive.dart';
+import 'package:financemanager/features/models/salesdata.dart';
+import 'package:financemanager/utilty.dart';
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+class Chart extends StatefulWidget {
+  final int indexx;
+  const Chart({
+    super.key,
+    required this.indexx,
+  });
+
+  @override
+  State<Chart> createState() => _ChartState();
+}
+
+class _ChartState extends State<Chart> {
+  List<Add_data>? a;
+  bool b = true;
+  bool j = true;
+  @override
+  Widget build(BuildContext context) {
+    switch (widget.indexx) {
+      case 0:
+        a = today();
+        b = true;
+        j = true;
+        break;
+      case 1:
+        a = week();
+        b = false;
+        j = true;
+        break;
+      case 2:
+        a = month();
+        b = false;
+        j = true;
+        break;
+      case 3:
+        a = year();
+
+        j = false;
+        break;
+      default:
+    }
+    return SizedBox(
+      width: double.infinity,
+      height: 300,
+      child: SfCartesianChart(
+        primaryXAxis: const CategoryAxis(),
+        series: <SplineSeries<SalesData, String>>[
+          SplineSeries<SalesData, String>(
+            color: const Color.fromARGB(255, 47, 125, 121),
+            width: 3,
+            dataSource: <SalesData>[
+              ...List.generate(time(a!, b ? true : false).length, (index) {
+                return SalesData(
+                    sales: b
+                        ? index > 0
+                            ? time(a!, true)[index] + time(a!, true)[index - 1]
+                            : time(a!, true)[index]
+                        : index > 0
+                            ? time(a!, false)[index] +
+                                time(a!, false)[index - 1]
+                            : time(a!, false)[index],
+                    year: j
+                        ? b
+                            ? a![index].datetime.hour.toString()
+                            : a![index].datetime.day.toString()
+                        : a![index].datetime.month.toString());
+              })
+            ],
+            xValueMapper: (SalesData sales, _) => sales.year,
+            yValueMapper: (SalesData sales, _) => sales.sales,
+          )
+        ],
+      ),
+    );
+  }
+}
