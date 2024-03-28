@@ -13,7 +13,7 @@ class Bottom extends StatefulWidget {
 
 class _BottomState extends State<Bottom> {
   int index_color = 0;
-  List Screen = [const Home(), const Statistics(), const Home(), const Statistics()];
+  List Screen = [const Home(), const Home(),const Home(),const Home() ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
